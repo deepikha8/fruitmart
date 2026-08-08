@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YourNameMart - Home</title>
+  <style>
+    /* Navigation Bar */
+    nav {
+      background:#ff6600;   /* orange bar */
+      padding:12px;
+      position:sticky;
+      top:0;
+      z-index:1000;
+      box-shadow:0 2px 8px rgba(0,0,0,0.3);
+    }
+    nav ul {
+      list-style:none;
+      margin:0;
+      padding:0;
+      display:flex;
+      justify-content:center;
+    }
+    nav li {
+      margin:0 20px;
+    }
+    nav a {
+      color:white;
+      text-decoration:none;
+      font-weight:bold;
+      font-size:18px;
+    }
+    nav a:hover {
+      text-decoration:underline;
+    }
+
+    /* Hero Section */
+  body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:url('https://images.unsplash.com/photo-1567306226416-28f0efdc88ce') no-repeat center/cover;
+}
+    .container {
+      text-align:center;
+      padding:100px 20px;
+      background:rgba(0,0,0,0.6); /* shaded overlay */
+      color:white;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    h1 {
+      font-size:42px;
+      margin-bottom:20px;
+      text-shadow:2px 2px 6px rgba(0,0,0,0.7);
+    }
+    p {
+      font-size:18px;
+      margin-bottom:40px;
+    }
+
+    /* Buyer/Seller Boxes */
+    .box-container {
+      display:flex;
+      justify-content:center;
+      gap:40px;
+      flex-wrap:wrap;
+    }
+    .box {
+      background:#ff6600;
+      color:white;
+      width:260px;   /* medium size */
+      padding:30px;
+      border-radius:12px;
+      text-align:center;
+      box-shadow:0 0 20px rgba(0,0,0,0.5);
+      transition:0.3s;
+    }
+    .box:hover {
+      transform:scale(1.05);
+    }
+    .box h2 {
+      margin-bottom:10px;
+    }
+    .box p {
+      font-size:15px;
+      margin-bottom:15px;
+    }
+    .box a {
+      display:inline-block;
+      margin:8px;
+      padding:10px 20px;
+      background:white;
+      color:#ff6600;
+      font-weight:bold;
+      border-radius:6px;
+      text-decoration:none;
+      transition:0.3s;
+    }
+    .box a:hover {
+      background:#ffe0cc;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li style="display:none;"><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Content -->
+  <div class="container">
+    <h1>Welcome to YourNameMart</h1>
+    <p>Select your role below:</p>
+    <div class="box-container">
+      <div class="box">
+        <h2>Buyer</h2>
+        <p>Browse and buy fresh fruits.</p>
+        <a href="register-buyer.html">Register</a>
+        <a href="login-buyer.html">Login</a>
+      </div>
+      <div class="box">
+        <h2>Seller</h2>
+        <p>Upload your fruits and set prices.</p>
+        <a href="register-seller.html">Register</a>
+        <a href="login-seller.html">Login</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
