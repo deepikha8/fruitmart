@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Buyer Profile</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
+    header { background:#ff6600; color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
+    nav { background:#333; padding:10px; text-align:center; }
+    nav a { color:white; text-decoration:none; margin:0 15px; font-weight:bold; }
+    nav a:hover { text-decoration:underline; }
+    .container { max-width:700px; margin:30px auto; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    h2 { color:#ff6600; text-align:center; }
+    label { display:block; margin-top:15px; font-weight:bold; }
+    input, textarea { width:100%; padding:10px; margin-top:5px; border:1px solid #ddd; border-radius:6px; }
+    button { margin-top:20px; padding:12px 20px; background:#ff6600; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+    button:hover { background:#e65c00; }
+    .profile-pic { display:block; margin:20px auto; width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid #ff6600; }
+    .section { margin-top:30px; }
+    #passwordSection { display:none; margin-top:20px; }
+  </style>
+</head>
+<body>
+  <header>Buyer Profile</header>
+  <nav>
+    <a href="buyer-dashboard.html">Dashboard</a>
+    <a href="cart.html">Cart</a>
+    <a href="#">My Orders</a>
+    <a href="login-buyer.html" onclick="logout()">Logout</a>
+  </nav>
+
+  <div class="container">
+    <h2>Profile Details</h2>
+    <!-- Round profile picture -->
+    <img id="profilePic" class="profile-pic" src="default-avatar.png" alt="Profile Picture">
+
+    <label>Email ID</label>
+    <input type="email" id="email" readonly>
+
+    <label>Full Name</label>
+    <input type="text" id="fullName">
+
+    <label>Mobile Number</label>
+    <input type="text" id="mobile">
+
+    <label>Address</label>
+    <textarea id="address"></textarea>
+
+    <label>City</label>
+    <input type="text" id="city">
+
+    <label>State</label>
+    <input type="text" id="state">
+
+    <label>Postal Code</label>
+    <input type="text" id="postal">
+
+    <label>Upload Profile Picture</label>
+    <input type="file" id="picUpload" accept="image/*">
+
+    <button onclick="saveProfile()">Save Profile</button>
+
+    <!-- Change Password Section -->
+    <div class="section">
+      <button onclick="togglePasswordSection()">Change Password?</button>
+      <div id="passwordSection">
+        <label>Current Password</label>
+        <input type="password" id="currentPassword">
+        <label>New Password</label>
+        <input type="password" id="newPassword">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword">
+        <button onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load profile from localStorage
+    function loadProfile() {
+      const profile = JSON.parse(localStorage.getItem("profile")) || {};
+      document.getElementById("email").value = profile.email || localStorage.getItem("loginEmail") || "";
+      document.getElementById("fullName").value = profile.fullName || "";
+      document.getElementById("mobile").value = profile.mobile || "";
+      document.getElementById("address").value = profile.address || "";
+      document.getElementById("city").value = profile.city || "";
+      document.getElementById("state").value = profile.state || "";
+      document.getElementById("postal").value = profile.postal || "";
+      if (profile.picData) {
+        document.getElementById("profilePic").src = profile.picData;
+      }
+    }
+
+    // Save profile to localStorage
+    function saveProfile() {
+      const profile = {
+        email: document.getElementById("email").value,
+        fullName: document.getElementById("fullName").value,
+        mobile: document.getElementById("mobile").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        state: document.getElementById("state").value,
+        postal: document.getElementById("postal").value,
+        picData: document.getElementById("profilePic").src,
+        password: JSON.parse(localStorage.getItem("profile"))?.password || "" // keep old password
+      };
+      localStorage.setItem("profile", JSON.stringify(profile));
+      alert("Profile saved successfully!");
+    }
+
+    // Handle profile picture upload
+    document.getElementById("picUpload").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("profilePic").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Toggle password section
+    function togglePasswordSection() {
+      const section = document.getElementById("passwordSection");
+      section.style.display = section.style.display === "none" ? "block" : "none";
+    }
+
+    // Change password
+    function changePassword() {
+      const currentPass = document.getElementById("currentPassword").value;
+      const newPass = document.getElementById("newPassword").value;
+      const confirmPass = document.getElementById("confirmPassword").value;
+      const profile = JSON.parse(localStorage.getItem("profile")) || {};
+
+      if (currentPass !== profile.password) {
+        alert("Current password is incorrect!");
+        return;
+      }
+      if (!newPass || newPass !== confirmPass) {
+        alert("New passwords do not match!");
+        return;
+      }
+      profile.password = newPass;
+      localStorage.setItem("profile", JSON.stringify(profile));
+      alert("Password updated successfully!");
+      document.getElementById("currentPassword").value = "";
+      document.getElementById("newPassword").value = "";
+      document.getElementById("confirmPassword").value = "";
+      document.getElementById("passwordSection").style.display = "none";
+    }
+
+    function logout() {
+      localStorage.removeItem("cart");
+      localStorage.removeItem("profile");
+      localStorage.removeItem("loginEmail");
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>
