@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Buyer Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
     header { background:#ff6600; color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
@@ -19,15 +18,8 @@
     .product p { margin:0 0 10px; font-size:14px; color:#555; }
     .product button { background:#ff6600; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-weight:bold; }
     .product button:hover { background:#e65c00; }
-    .cart { margin-top:40px; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    table { width:100%; border-collapse:collapse; }
-    th, td { padding:10px; border-bottom:1px solid #ddd; text-align:left; }
-    th { background:#ff6600; color:white; }
-    #total { text-align:right; font-weight:bold; margin-top:10px; }
-    .checkout-btn { margin-top:15px; padding:12px 20px; background:#ff6600; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-    .checkout-btn:hover { background:#e65c00; }
-    .remove-btn { background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; }
-    .remove-btn:hover { background:darkred; }
+    .checkout-link { display:block; margin:30px auto; width:200px; text-align:center; padding:12px 20px; background:#ff6600; color:white; border-radius:6px; text-decoration:none; font-weight:bold; }
+    .checkout-link:hover { background:#e65c00; }
   </style>
 </head>
 <body>
@@ -35,7 +27,7 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="#">My Orders</a>
-    <a href="profile.html">Profile</a> 
+   <a href="profile.html">Profile</a> 
     <a href="login-buyer.html">Logout</a>
   </nav>
 
@@ -54,18 +46,8 @@
       <div class="product"><img src="https://images.unsplash.com/photo-1617196037303-5e5d1c2c8e8f" alt="Papaya"><h3>Papaya</h3><p>₹60 / kg</p><button onclick="addToCart('Papaya',60,'kg')">Add to Cart</button></div>
     </div>
 
-    <!-- View Cart -->
-    <div class="cart">
-      <h2>View Cart</h2>
-      <table id="cartTable">
-        <thead>
-          <tr><th>Fruit</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="total">Total: ₹0</div>
-      <button class="checkout-btn" onclick="goToBilling()">Checkout</button>
-    </div>
+    <!-- Link to Cart Page -->
+    <a href="cart.html" class="checkout-link">View Cart</a>
   </div>
 
   <script>
@@ -76,34 +58,8 @@
       if (existing) { existing.qty += 1; }
       else { cart.push({ name, price, unit, qty:1 }); }
       localStorage.setItem("cart", JSON.stringify(cart));
-      loadCart();
+      // Removed alert() so no popup appears
     }
-
-    function removeFromCart(name) {
-      cart = cart.filter(item => item.name !== name);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      loadCart();
-    }
-
-    function loadCart() {
-      const tbody = document.querySelector("#cartTable tbody");
-      tbody.innerHTML = "";
-      let total = 0;
-      cart.forEach(item => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        tbody.innerHTML += `<tr>
-          <td>${item.name}</td>
-          <td>₹${item.price}/${item.unit}</td>
-          <td>${item.qty}</td>
-          <td>₹${subtotal}</td>
-          <td><button class="remove-btn" onclick="removeFromCart('${item.name}')">Remove</button></td>
-        </tr>`;
-      });
-      document.getElementById("total").textContent = "Total: ₹" + total;
-    }
-
-    function goToBilling() { window.location.href = "billing.html"; }
 
     // Append Seller Fruits dynamically
     function loadSellerFruits() {
@@ -120,9 +76,7 @@
       });
     }
 
-    loadCart();
     loadSellerFruits();
   </script>
 </body>
 </html>
-
