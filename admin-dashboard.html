@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+    .dashboard { width:95%; margin:40px auto; background:white; padding:20px; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2); }
+    h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
+    h2 { color:#ff6600; margin-top:30px; }
+    table { width:100%; border-collapse:collapse; margin-top:15px; }
+    th, td { padding:10px; border-bottom:1px solid #ddd; text-align:left; }
+    th { background:#ff6600; color:white; }
+    .fruit-item img { width:50px; height:50px; object-fit:cover; border-radius:6px; }
+    .delete-btn { background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; }
+    .delete-btn:hover { background:darkred; }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Seller Section -->
+    <h2>Seller Fruits</h2>
+    <table id="fruitsTable">
+      <thead>
+        <tr><th>Image</th><th>Name</th><th>Price</th><th>Unit</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Buyer Section -->
+    <h2>Buyer Bills</h2>
+    <table id="billsTable">
+      <thead>
+        <tr><th>Bill No</th><th>Name</th><th>Email</th><th>Phone</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Load Seller Fruits
+    function loadFruits() {
+      const tbody = document.querySelector("#fruitsTable tbody");
+      tbody.innerHTML = "";
+      let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+      fruits.forEach((fruit, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td><img src="${fruit.image}" alt="${fruit.name}"></td>
+            <td>${fruit.name}</td>
+            <td>₹${fruit.price}</td>
+            <td>${fruit.unit}</td>
+            <td><button class="delete-btn" onclick="deleteFruit(${index})">Delete</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteFruit(index) {
+      let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+      const deleted = fruits.splice(index, 1);
+      localStorage.setItem("fruits", JSON.stringify(fruits));
+      alert(deleted[0].name + " deleted successfully!");
+      loadFruits();
+    }
+
+    // Load Buyer Bills
+    function loadBills() {
+      const tbody = document.querySelector("#billsTable tbody");
+      tbody.innerHTML = "";
+      let bills = JSON.parse(localStorage.getItem("bills")) || [];
+      bills.forEach(bill => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${bill.billNo}</td>
+            <td>${bill.name}</td>
+            <td>${bill.email}</td>
+            <td>${bill.phone}</td>
+            <td>₹${bill.total}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Initial load
+    loadFruits();
+    loadBills();
+  </script>
+</body>
+</html>

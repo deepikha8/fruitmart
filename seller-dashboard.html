@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seller Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+    header { background:#ff6600; color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
+    .container { width:600px; margin:40px auto; background:white; padding:30px; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2); }
+    h2 { text-align:center; margin-bottom:20px; color:#ff6600; }
+    input, button { width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
+    button { background:#ff6600; color:white; font-weight:bold; border:none; cursor:pointer; transition:0.3s; }
+    button:hover { background:#e65c00; }
+    .fruit-list { margin-top:20px; }
+    .fruit-item { display:flex; align-items:center; justify-content:space-between; background:#ffe0cc; padding:10px; border-radius:8px; margin-bottom:10px; }
+    .fruit-item img { width:60px; height:60px; object-fit:cover; border-radius:6px; margin-right:10px; }
+    .fruit-info { flex:1; }
+    .delete-btn { background:red; padding:8px 12px; border-radius:6px; font-size:14px; color:white; border:none; cursor:pointer; }
+    .delete-btn:hover { background:darkred; }
+  </style>
+</head>
+<body>
+  <header>Seller Dashboard</header>
+  <div class="container">
+    <h2>Upload Fruit Details</h2>
+    <input type="file" id="fruitImage" accept="image/*">
+    <input type="text" id="fruitName" placeholder="Fruit Name" required>
+    <input type="number" id="fruitPrice" placeholder="Price" required>
+    <input type="text" id="fruitUnit" placeholder="Unit (kg/dozen/piece)" required>
+    <button onclick="submitFruit()">Submit</button>
+
+    <h3>Your Uploaded Fruits</h3>
+    <div id="fruitList" class="fruit-list"></div>
+  </div>
+
+  <script>
+    function submitFruit() {
+      const fruitName = document.getElementById("fruitName").value;
+      const fruitPrice = document.getElementById("fruitPrice").value;
+      const fruitUnit = document.getElementById("fruitUnit").value;
+      const fruitImage = document.getElementById("fruitImage").files[0];
+
+      if (fruitName && fruitPrice && fruitUnit && fruitImage) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+          fruits.push({ name: fruitName, price: fruitPrice, unit: fruitUnit, image: e.target.result });
+          localStorage.setItem("fruits", JSON.stringify(fruits));
+          alert("Fruit uploaded successfully!");
+          loadFruits();
+        };
+        reader.readAsDataURL(fruitImage);
+      } else {
+        alert("Please fill all fields and upload an image.");
+      }
+    }
+
+    function loadFruits() {
+      const fruitListDiv = document.getElementById("fruitList");
+      fruitListDiv.innerHTML = "";
+      let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+      fruits.forEach((fruit, index) => {
+        const fruitDiv = document.createElement("div");
+        fruitDiv.className = "fruit-item";
+        fruitDiv.innerHTML = `
+          <img src="${fruit.image}" alt="${fruit.name}">
+          <div class="fruit-info"><strong>${fruit.name}</strong> - ₹${fruit.price}/${fruit.unit}</div>
+          <button class="delete-btn" onclick="deleteFruit(${index})">Delete</button>
+        `;
+        fruitListDiv.appendChild(fruitDiv);
+      });
+    }
+
+    function deleteFruit(index) {
+      let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+      const deleted = fruits.splice(index, 1);
+      localStorage.setItem("fruits", JSON.stringify(fruits));
+      alert(deleted[0].name + " deleted successfully!");
+      loadFruits();
+    }
+
+    loadFruits();
+  </script>
+</body>
+</html>

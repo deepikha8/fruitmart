@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seller Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin:0;
+      /* Fruit market background */
+      background:url('https://images.unsplash.com/photo-1506806732259-39c2d0268443') no-repeat center/cover;
+    }
+    .container {
+      width:400px;
+      margin:80px auto;
+      background:rgba(255,102,0,0.9); /* orange overlay */
+      padding:30px;
+      border-radius:12px;
+      color:white;
+      box-shadow:0 0 20px rgba(0,0,0,0.5);
+    }
+    h2 {
+      text-align:center;
+      margin-bottom:20px;
+      text-shadow:2px 2px 6px rgba(0,0,0,0.7);
+    }
+    input {
+      width:100%;
+      padding:12px;
+      margin:10px 0;
+      border:none;
+      border-radius:6px;
+    }
+    button {
+      width:100%;
+      padding:12px;
+      background:white;
+      color:#ff6600;
+      font-weight:bold;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    button:hover {
+      background:#ffe0cc;
+    }
+    #message {
+      text-align:center;
+      margin-top:15px;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Seller Registration</h2>
+    <form onsubmit="registerSeller(event)">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Register as Seller</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    function registerSeller(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Save seller credentials locally (demo only)
+      localStorage.setItem("sellerName", name);
+      localStorage.setItem("sellerEmail", email);
+      localStorage.setItem("sellerPassword", password);
+
+      // Show success message
+      document.getElementById("message").textContent = "Registration completed!";
+    }
+  </script>
+</body>
+</html>

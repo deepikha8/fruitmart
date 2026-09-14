@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Billing Invoice</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+    .invoice { width:80%; max-width:900px; margin:40px auto; background:white; padding:30px; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2); }
+    h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
+    .details { margin-bottom:20px; }
+    .details p { margin:5px 0; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { padding:10px; border-bottom:1px solid #ddd; text-align:left; }
+    th { background:#ff6600; color:white; }
+    #total { text-align:right; font-weight:bold; margin-top:10px; }
+    .btn { margin-top:20px; padding:12px 20px; background:#ff6600; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+    .btn:hover { background:#e65c00; }
+    .qr { text-align:center; margin-top:20px; display:none; }
+  </style>
+</head>
+<body>
+  <div class="invoice">
+    <h1>Billing Invoice</h1>
+    <div class="details">
+      <p><strong>Bill No:</strong> <span id="billNo"></span></p>
+      <p><strong>Name:</strong> <span id="custName"></span></p>
+      <p><strong>Email:</strong> <span id="custEmail"></span></p>
+      <p><strong>Phone:</strong> <input type="tel" id="custPhone" placeholder="Enter Phone Number"></p>
+      <button class="btn" onclick="proceedToPay()">Proceed to Pay</button>
+    </div>
+
+    <table id="billTable">
+      <thead>
+        <tr><th>Fruit</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="total">Total: ₹0</div>
+
+    <!-- QR Code Section (hidden until proceed) -->
+    <div class="qr" id="qrSection">
+      <h3>Scan to Pay</h3>
+      <img id="qrCode" alt="QR Code for Payment">
+      <button class="btn" onclick="saveBill()">Save Bill</button>
+    </div>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const name = localStorage.getItem("buyerName") || "Guest";
+    const email = localStorage.getItem("buyerEmail") || "N/A";
+
+    document.getElementById("custName").textContent = name;
+    document.getElementById("custEmail").textContent = email;
+
+    const billNo = "BILL-" + Date.now();
+    document.getElementById("billNo").textContent = billNo;
+
+    function loadBill() {
+      const tbody = document.querySelector("#billTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        tbody.innerHTML += `<tr>
+          <td>${item.name}</td>
+          <td>₹${item.price}/${item.unit}</td>
+          <td>${item.qty}</td>
+          <td>₹${subtotal}</td>
+        </tr>`;
+      });
+      document.getElementById("total").textContent = "Total: ₹" + total;
+      return total;
+    }
+
+    function proceedToPay() {
+      const phone = document.getElementById("custPhone").value;
+      if (!phone) {
+        alert("Please enter your phone number before proceeding.");
+        return;
+      }
+      const total = loadBill();
+      const upiLink = `upi://pay?pa=yourupiid@bank&pn=${name}&am=${total}&cu=INR&tn=${billNo}`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+      document.getElementById("qrCode").src = qrUrl;
+      document.getElementById("qrSection").style.display = "block";
+    }
+
+    function saveBill() {
+      const phone = document.getElementById("custPhone").value;
+      const total = loadBill();
+      const bills = JSON.parse(localStorage.getItem("bills")) || [];
+      bills.push({ billNo, name, email, phone, cart, total });
+      localStorage.setItem("bills", JSON.stringify(bills));
+      alert("Bill saved successfully!");
+      window.location.href = "index.html";
+    }
+
+    loadBill();
+  </script>
+</body>
+</html>

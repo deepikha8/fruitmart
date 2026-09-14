@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+    .dashboard { width:90%; margin:40px auto; background:white; padding:20px; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2); }
+    h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:10px; border-bottom:1px solid #ddd; text-align:left; }
+    th { background:#ff6600; color:white; }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Admin Dashboard - Bills</h1>
+    <table id="billsTable">
+      <thead>
+        <tr><th>Bill No</th><th>Name</th><th>Email</th><th>Phone</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    const tbody = document.querySelector("#billsTable tbody");
+
+    bills.forEach(bill => {
+      tbody.innerHTML += `<tr>
+        <td>${bill.billNo}</td>
+        <td>${bill.name}</td>
+        <td>${bill.email}</td>
+        <td>${bill.phone}</td>
+        <td>${bill.total}</td>
+      </tr>`;
+    });
+  </script>
+</body>
+</html>

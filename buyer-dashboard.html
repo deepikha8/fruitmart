@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Buyer Dashboard</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
+    header { background:#ff6600; color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
+    nav { background:#333; padding:10px; text-align:center; }
+    nav a { color:white; text-decoration:none; margin:0 15px; font-weight:bold; }
+    nav a:hover { text-decoration:underline; }
+    .container { padding:20px; }
+    h2 { color:#ff6600; text-align:center; }
+    .products { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:20px; }
+    .product { background:white; border:1px solid #ddd; border-radius:8px; width:200px; padding:15px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .product img { width:100%; height:150px; object-fit:cover; border-radius:6px; }
+    .product h3 { margin:10px 0 5px; font-size:18px; }
+    .product p { margin:0 0 10px; font-size:14px; color:#555; }
+    .product button { background:#ff6600; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-weight:bold; }
+    .product button:hover { background:#e65c00; }
+    .cart { margin-top:40px; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:10px; border-bottom:1px solid #ddd; text-align:left; }
+    th { background:#ff6600; color:white; }
+    #total { text-align:right; font-weight:bold; margin-top:10px; }
+    .checkout-btn { margin-top:15px; padding:12px 20px; background:#ff6600; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+    .checkout-btn:hover { background:#e65c00; }
+    .remove-btn { background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; }
+    .remove-btn:hover { background:darkred; }
+  </style>
+</head>
+<body>
+  <header>Buyer Dashboard</header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="#">My Orders</a>
+    <a href="#">Profile</a>
+    <a href="login-buyer.html">Logout</a>
+  </nav>
+
+  <div class="container">
+    <h2>Available Fruits</h2>
+    <div class="products" id="products">
+      <!-- Static Fruits -->
+      <div class="product"><img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce" alt="Apple"><h3>Apple</h3><p>₹120 / kg</p><button onclick="addToCart('Apple',120,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1574226516831-e1dff420e12d" alt="Banana"><h3>Banana</h3><p>₹60 / dozen</p><button onclick="addToCart('Banana',60,'dozen')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1617196037303-5e5d1c2c8e8f" alt="Orange"><h3>Orange</h3><p>₹80 / kg</p><button onclick="addToCart('Orange',80,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1582515073490-dc0c7f1c1f3b" alt="Mango"><h3>Mango</h3><p>₹100 / kg</p><button onclick="addToCart('Mango',100,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f" alt="Grapes"><h3>Grapes</h3><p>₹90 / kg</p><button onclick="addToCart('Grapes',90,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1592928303860-1e0f6a7f6a3f" alt="Pineapple"><h3>Pineapple</h3><p>₹70 / piece</p><button onclick="addToCart('Pineapple',70,'piece')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2" alt="Strawberry"><h3>Strawberry</h3><p>₹250 / kg</p><button onclick="addToCart('Strawberry',250,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1604908177522-432f3f3f3f3f" alt="Watermelon"><h3>Watermelon</h3><p>₹40 / kg</p><button onclick="addToCart('Watermelon',40,'kg')">Add to Cart</button></div>
+      <div class="product"><img src="https://images.unsplash.com/photo-1617196037303-5e5d1c2c8e8f" alt="Papaya"><h3>Papaya</h3><p>₹60 / kg</p><button onclick="addToCart('Papaya',60,'kg')">Add to Cart</button></div>
+    </div>
+
+    <!-- View Cart -->
+    <div class="cart">
+      <h2>View Cart</h2>
+      <table id="cartTable">
+        <thead>
+          <tr><th>Fruit</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="total">Total: ₹0</div>
+      <button class="checkout-btn" onclick="goToBilling()">Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    function addToCart(name, price, unit) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ name, price, unit, qty:1 }); }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeFromCart(name) {
+      cart = cart.filter(item => item.name !== name);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function loadCart() {
+      const tbody = document.querySelector("#cartTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        tbody.innerHTML += `<tr>
+          <td>${item.name}</td>
+          <td>₹${item.price}/${item.unit}</td>
+          <td>${item.qty}</td>
+          <td>₹${subtotal}</td>
+          <td><button class="remove-btn" onclick="removeFromCart('${item.name}')">Remove</button></td>
+        </tr>`;
+      });
+      document.getElementById("total").textContent = "Total: ₹" + total;
+    }
+
+    function goToBilling() { window.location.href = "billing.html"; }
+
+    // Append Seller Fruits dynamically
+    function loadSellerFruits() {
+      const productsDiv = document.getElementById("products");
+      let fruits = JSON.parse(localStorage.getItem("fruits")) || [];
+      fruits.forEach(fruit => {
+        productsDiv.innerHTML += `
+          <div class="product">
+            <img src="${fruit.image}" alt="${fruit.name}">
+            <h3>${fruit.name}</h3>
+            <p>₹${fruit.price} / ${fruit.unit}</p>
+            <button onclick="addToCart('${fruit.name}',${fruit.price},'${fruit.unit}')">Add to Cart</button>
+          </div>`;
+      });
+    }
+
+    loadCart();
+    loadSellerFruits();
+  </script>
+</body>
+</html>
+
